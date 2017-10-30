@@ -1,4 +1,4 @@
-# Blink IDL files
+# Blink IDL files [![GoDoc](https://godoc.org/github.com/vecty/blink-idl?status.svg)](https://godoc.org/github.com/vecty/blink-idl)
 
 This repository contains IDL files from the Blink browser engine. Effectively, these files describe the public JavaScript API exposed by Google Chrome and other Chromium browsers.
 
