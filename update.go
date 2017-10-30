@@ -1,3 +1,5 @@
+// +build ignore
+
 package main
 
 import (
@@ -40,7 +42,7 @@ hour. Be prepared to make some coffee! =)
 
 	// Pull repository changes.
 	log.Println("- Fetching latest changes for ./blink repository")
-	gitCmd(repoDir, "git", "pull")
+	execCmd(repoDir, "git", "pull")
 
 	log.Println("- Removing existing ./idl")
 	if err := os.RemoveAll("idl"); err != nil {
@@ -91,28 +93,31 @@ hour. Be prepared to make some coffee! =)
 	log.Println("- Copied", count, "IDL files to ./idl")
 
 	// Update revision file.
-	log.Println("- Updating ./REVISION file")
+	log.Println("- Updating ./idl/REVISION file")
 	cmd := exec.Command("git", "rev-parse", "HEAD")
 	cmd.Dir = repoDir
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = ioutil.WriteFile("REVISION", out, 0777)
+	err = ioutil.WriteFile("idl/REVISION", out, 0777)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Generate VFS.
+	execCmd("", "vfsgendev", "-source", `"github.com/vecty/blink-idl".Assets`)
+
 	// Commit the changes.
 	log.Println("- Committing changes")
-	gitCmd("", "git", "add", "./idl", "./REVISION")
-	gitCmd("", "git", "commit", "-m", "Update IDL files to blink@"+string(out)[:6])
+	execCmd("", "git", "add", "./idl", "./idl/REVISION", "./assets_vfsdata.go")
+	execCmd("", "git", "commit", "-m", "Update IDL files to blink@"+string(out)[:6])
 	log.Println("\nSuccess! You can now `git push`")
 }
 
-func gitCmd(repoDir, cmd string, args ...string) {
+func execCmd(dir, cmd string, args ...string) {
 	c := exec.Command(cmd, args...)
-	c.Dir = repoDir
+	c.Dir = dir
 	c.Stderr = os.Stderr
 	c.Stdout = os.Stdout
 	c.Stdin = os.Stdin

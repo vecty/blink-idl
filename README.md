@@ -10,4 +10,18 @@ The IDL files are used by [vectapi](https://github.com/vecty/vectapi) to generat
 
 ## Updating
 
+Install `vfsgendev`:
+
+```Bash
+go get -u github.com/shurcooL/vfsgen/cmd/vfsgendev
+```
+
 To update the IDL files in this repository, run `go run update.go`.
+
+## Importable
+
+All of the files are also importable as a Go VFS asset package:
+
+```Go
+import "github.com/vecty/blink-idl"
+```
